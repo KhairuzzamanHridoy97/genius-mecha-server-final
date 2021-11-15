@@ -6,7 +6,7 @@ const ObjectId = require('mongodb').ObjectId;
 
 
 const app = express();
-const port = 5000;
+const port = process.env.PORT || 5000
 
 //middleware
 app.use(cors());
@@ -30,7 +30,7 @@ async function run(){
         })
 
         //Get Single Service
-        app.get('/services/:id',async(req,res)=>{
+        app.get('/singleServices/:id',async(req,res)=>{
             const id = req.params.id;
             const query = {_id:ObjectId(id)}
             const service = await serviceCollection.findOne(query);
@@ -41,11 +41,11 @@ async function run(){
         //POST API
         app.post('/services',async(req,res)=>{
             const service=req.body;
+            const result = await serviceCollection.insertOne(service);
             console.log('hit the post api',service);
 
 
             res.send('hit the post api')
-            const result = await serviceCollection.insertOne(service);
             res.json(result);
             console.log(result)
         });
@@ -73,6 +73,9 @@ app.get('/',(req,res)=>{
     res.send('Running Genius Car Mechanic Server');
 })
 
-app.listen(port,()=>{
-    console.log('Running Genius Car Mechanic Server on ',port);
-})
+// app.listen(port,()=>{
+//     console.log('Running Genius Car Mechanic Server on ',port);
+// })
+
+app.listen(process.env.PORT || port); 
+
